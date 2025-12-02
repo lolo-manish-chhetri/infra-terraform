@@ -10,7 +10,7 @@ resource "google_cloud_run_service" "cloud-run" {
     }
   }
   traffic {
-    percent = 100
+    percent         = 100
     latest_revision = true
   }
 }
