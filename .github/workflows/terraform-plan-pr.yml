@@ -31,7 +31,7 @@ jobs:
           bucket         = "${{ env.TF_S3_BUCKET }}"
           prefix         = "${{ env.TF_S3_PREFIX }}"
           EOF
-          terraform init -input=false -backend-config=backend.hcl
+          terraform init -input=false -backend=false
 
 
       - name: Terraform Validate
