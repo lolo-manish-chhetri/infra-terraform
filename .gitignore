@@ -17,4 +17,4 @@ crash.*.log
 
 secret-files/
 key.json
-bash/setup.sh
+bash/
