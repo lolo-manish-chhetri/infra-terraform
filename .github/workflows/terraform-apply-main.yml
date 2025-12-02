@@ -25,11 +25,6 @@ jobs:
           audience: "https://github.com/lolo-manish-chhetri"
           create_credentials_file: true
 
-      - name: Set up gcloud
-        run: |
-          gcloud auth activate-service-account --key-file="${{ steps.auth.outputs.credentials_file_path }}"
-          gcloud config set project rich-torus-428117-m8
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
