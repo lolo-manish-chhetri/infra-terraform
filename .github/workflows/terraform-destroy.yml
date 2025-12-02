@@ -18,8 +18,9 @@ jobs:
         with:
           workload_identity_provider: projects/853065134388/locations/global/workloadIdentityPools/learning-github-actions-pool/providers/learning-github-actions-provider
           service_account: learning-github-actions-sa@rich-torus-428117-m8.iam.gserviceaccount.com
+          audience: "https://github.com/lolo-manish-chhetri"
           create_credentials_file: true
-    
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
