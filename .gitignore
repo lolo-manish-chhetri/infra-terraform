@@ -1,0 +1,20 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+
+# Local state
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Sensitive
+*.tfvars
+*.tfvars.json
+
+
+secret-files/
+key.json
+bash/setup.sh
