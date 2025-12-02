@@ -1,15 +1,14 @@
-name: Terraform PR Checks and Plan
-
+name: Terraform PR Plan
 on:
   pull_request:
     branches: [ main ]
 
 permissions:
   contents: read
-  id-token: write # needed for OIDC in internal PRs
+  id-token: write    # needed for OIDC token (if you plan to auth in PR jobs — often not needed for plan)
 
 jobs:
-  terraform_static:
+  terraform:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,38 +21,23 @@ jobs:
         working-directory: ./envs/prod
         run: terraform fmt -check
 
-      - name: Terraform Init (no backend)
+      - name: Terraform Init
         working-directory: ./envs/prod
-        run: terraform init -backend=false -input=false
+        run: terraform init -input=false
 
       - name: Terraform Validate
         working-directory: ./envs/prod
         run: terraform validate
-
-  terraform_plan:
-    # Only run plan for PRs from the same repo (not forks)
-    if: github.event.pull_request.head.repo.full_name == github.repository
-    needs: terraform_static
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: "projects/853065134388/locations/global/workloadIdentityPools/learning-github-actions-pool/providers/learning-github-actions-provider"
           service_account: "learning-github-actions-sa@rich-torus-428117-m8.iam.gserviceaccount.com"
-          audience: "https://github.com/lolo-manish-chhetri"
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init
-        working-directory: ./envs/prod
-        run: terraform init -input=false
+          audience: "https://github.com/lolo-manish-chhetri"    
 
       - name: Terraform Plan
+        id: plan
         working-directory: ./envs/prod
         run: terraform plan -no-color -out=tfplan.binary
 
