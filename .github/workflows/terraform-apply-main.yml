@@ -32,7 +32,15 @@ jobs:
 
       - name: Terraform Init
         working-directory: ./envs/prod
-        run: terraform init -input=false
+        env:
+          TF_S3_BUCKET: ${{ secrets.TF_S3_BUCKET }}
+          TF_S3_PREFIX: ${{ secrets.TF_S3_PREFIX }}
+        run: |
+          cat > backend.hcl <<EOF
+          bucket         = "${{ env.TF_S3_BUCKET }}"
+          prefix         = "${{ env.TF_S3_PREFIX }}"
+          EOF
+          terraform init -input=false -backend-config=backend.hcl
 
       - name: Terraform Apply
         working-directory: ./envs/prod
