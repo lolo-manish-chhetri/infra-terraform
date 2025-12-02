@@ -14,7 +14,7 @@ provider "google" {
 
 
 resource "google_cloud_run_service" "cloud-run" {
-  name     = "cloud-run-learning-prod"
+  name     = "cloud-run-learning-prod-v1"
   location = "us-central1"
   project  = "rich-torus-428117-m8"
   template {
