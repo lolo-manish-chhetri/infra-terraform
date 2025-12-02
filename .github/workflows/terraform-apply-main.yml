@@ -1,0 +1,43 @@
+name: Terraform Apply (main)
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: prod    # <-- must match the GitHub Environment you created with required reviewers
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to GCP via OIDC
+        id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: projects/853065134388/locations/global/workloadIdentityPools/learning-github-actions-pool/providers/learning-github-actions-provider
+          service_account: learning-github-actions-sa@rich-torus-428117-m8.iam.gserviceaccount.com
+          create_credentials_file: true
+
+      - name: Set up gcloud
+        run: |
+          gcloud auth activate-service-account --key-file="${{ steps.auth.outputs.credentials_file_path }}"
+          gcloud config set project rich-torus-428117-m8
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Terraform Init
+        working-directory: ./envs/prod
+        run: terraform init -input=false
+
+      - name: Terraform Apply
+        working-directory: ./envs/prod
+        run: terraform apply -auto-approve
